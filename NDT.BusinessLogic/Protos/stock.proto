@@ -1,0 +1,260 @@
+syntax = "proto3";
+
+package stockdata;
+
+service StockService {
+  rpc GetHistoricalData (HistoricalDataRequest) returns (HistoricalDataResponse);
+  rpc GetMajorShareholders (CompanyRequest) returns (MajorShareholdersResponse);
+  rpc GetNews (CompanyRequest) returns (NewsResponse);
+  rpc GetEvents (CompanyRequest) returns (EventsResponse);
+  rpc GetOfficers (CompanyRequest) returns (OfficersResponse);
+  rpc GetTradingStats (CompanyRequest) returns (TradingStatsResponse);
+  rpc GetIncomeStatement (IncomeStatementRequest) returns (IncomeStatementResponse);
+  rpc GetFinanceRatios (IncomeStatementRequest) returns (FinanceRatiosResponse);
+  rpc GetPriceBoard (PriceBoardRequest) returns (PriceBoardResponse);
+}
+
+message HistoricalDataRequest {
+  string symbol = 1;
+  string start_date = 2;
+  string end_date = 3;
+}
+
+message HistoricalRecord {
+  string date = 1;
+  double open = 2;
+  double close = 3;
+  double high = 4;
+  double low = 5;
+  int64 volume = 6;
+}
+
+message HistoricalDataResponse {
+  repeated HistoricalRecord records = 1;
+}
+
+message FinancialReportRequest {
+  string symbol = 1;
+  string frequency = 2; // "quarterly" or "yearly"
+}
+
+message FinancialRecord {
+  string title = 1;
+  string time = 2;
+  string value = 3;
+}
+
+message FinancialReportResponse {
+  repeated FinancialRecord records = 1;
+}
+
+message CompanyRequest {
+  string symbol = 1;
+}
+
+message Manager {
+  string name = 1;
+  string title = 2;
+  string dob = 3;
+  string gender = 4;
+  string nationality = 5;
+}
+
+message BusinessManagersResponse {
+  repeated Manager managers = 1;
+}
+
+message Shareholder {
+  string name = 1;
+  int64 quantity = 2;
+  float ownership_percentage = 3;
+  string update_date = 4;
+}
+
+message MajorShareholdersResponse {
+  repeated Shareholder shareholders = 1;
+}
+
+message CompanyProfileResponse {
+  string name = 1;
+  string industry = 2;
+  string sector = 3;
+  string listing_date = 4;
+  string exchange = 5;
+  string address = 6;
+  string website = 7;
+  string description = 8;
+}
+
+message StockQuoteRequest {
+  string symbol = 1;
+}
+
+message StockQuoteResponse {
+  string time = 1;
+  double current_price = 2;
+  double open = 3;
+  double high = 4;
+  double low = 5;
+  double previous_close = 6;
+  int64 total_volume = 7;
+  int64 foreign_buy = 8;
+  int64 foreign_sell = 9;
+}
+
+message NewsArticle {
+  string title = 1;
+  string published_date = 2;
+  string url = 3;
+  string summary = 4;
+}
+
+message NewsResponse {
+  repeated NewsArticle articles = 1;
+}
+
+message Event {
+  string event_title = 1;
+  string public_date = 2;
+  string issue_date = 3;
+  string source_url = 4;
+  string event_list_code = 5;
+  string ratio = 6;
+  string value = 7;
+  string record_date = 8;
+  string exright_date = 9;
+  string event_list_name = 10;
+}
+
+message EventsResponse {
+  repeated Event events = 1;
+}
+
+message Officer {
+  string officer_name = 1;
+  string officer_position = 2;
+  string position_short_name = 3;
+  string update_date = 4;
+  float officer_own_percent = 5;
+  int64 quantity = 6;
+}
+
+message OfficersResponse {
+  repeated Officer officers = 1;
+}
+
+message TradingStats {
+  double ceiling = 1;
+  double floor = 2;
+  double ref_price = 3;
+  double open = 4;
+  double match_price = 5;
+  double close_price = 6;
+  double price_change = 7;
+}
+
+message TradingStatsResponse {
+  TradingStats stats = 1;
+}
+
+message IncomeStatementRequest {
+  string symbol = 1;
+  string period = 2;  // "yearly" or "quarterly"
+}
+
+message IncomeStatementResponse {
+  repeated IncomeStatementRecord records = 1;
+}
+
+message IncomeStatementRecord {
+  int32 year = 1;
+  int32 quarter = 2;
+  double revenue = 3;
+  double net_profit = 4;
+  double profit_after_tax = 5;
+  double profit_attributable_to_parent = 6;
+}
+
+message FinanceRatiosRecord {
+  int32 year = 1;
+  int32 quarter = 2;
+  double debt_to_equity = 3;
+  double fixed_asset_to_equity = 4;
+  double equity_to_charter_capital = 5;
+  double net_profit_margin = 6;
+  double roe = 7;
+  double roic = 8;
+  double roa = 9;
+  double dividend_yield = 10;
+  double financial_leverage = 11;
+  double market_capital = 12;
+  double outstanding_shares = 13;
+  double pe_ratio = 14;
+  double pb_ratio = 15;
+  double ps_ratio = 16;
+  double p_cash_flow = 17;
+  double eps = 18;
+  double bvps = 19;
+}
+
+message FinanceRatiosResponse {
+  repeated FinanceRatiosRecord records = 1;
+}
+
+message PriceBoardRequest {
+  repeated string symbols = 1;
+}
+
+message PriceBoardRecord {
+  string symbol = 1;
+  double ceiling = 2;
+  double floor = 3;
+  double ref_price = 4;
+  string stock_type = 5;
+  string exchange = 6;
+  string trading_status = 7;
+  string security_status = 8;
+  string last_trading_date = 9;
+  int64 listed_share = 10;
+  string sending_time = 11;
+  string organ_name = 12;
+  string mapping_symbol = 13;
+  string product_grp_id = 14;
+  int32 partition = 15;
+  string trading_date = 16;
+  double accumulated_value = 17;
+  int64 accumulated_volume = 18;
+  double avg_match_price = 19;
+  int64 current_room = 20;
+  int64 foreign_buy_volume = 21;
+  int64 foreign_sell_volume = 22;
+  double foreign_buy_value = 23;
+  double foreign_sell_value = 24;
+  double highest = 25;
+  double lowest = 26;
+  double match_price = 27;
+  string match_type = 28;
+  int64 match_vol = 29;
+  int64 total_room = 30;
+  int32 total_buy_orders = 31;
+  int32 total_sell_orders = 32;
+  int32 bid_count = 33;
+  int32 ask_count = 34;
+  double reference_price = 35;
+  double bid_1_price = 36;
+  int64 bid_1_volume = 37;
+  double bid_2_price = 38;
+  int64 bid_2_volume = 39;
+  double bid_3_price = 40;
+  int64 bid_3_volume = 41;
+  double ask_1_price = 42;
+  int64 ask_1_volume = 43;
+  double ask_2_price = 44;
+  int64 ask_2_volume = 45;
+  double ask_3_price = 46;
+  int64 ask_3_volume = 47;
+}
+
+message PriceBoardResponse {
+  repeated PriceBoardRecord records = 1;
+}

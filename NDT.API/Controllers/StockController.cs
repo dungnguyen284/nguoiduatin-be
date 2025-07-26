@@ -8,6 +8,7 @@ using NDT.BusinessLogic.DTOs.ResponseDTOs;
 using NDT.API.CustomedResponses;
 using Stockdata;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace NDT.API.Controllers
 {
@@ -159,10 +160,11 @@ namespace NDT.API.Controllers
 
         // CRUD Stock
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<StockResponseDTO>>>> GetAllStocks()
+        [EnableQuery]
+        public async Task<ActionResult<IEnumerable<StockResponseDTO>>> GetAllStocks()
         {
             var result = await _stockService.GetAllStocksAsync();
-            return Ok(new ApiResponse<IEnumerable<StockResponseDTO>>(200, "Success", result));
+            return Ok(result);
         }
 
         [HttpGet("{symbol}")]
@@ -176,6 +178,11 @@ namespace NDT.API.Controllers
         [HttpPost]
         public async Task<ActionResult<ApiResponse<StockResponseDTO>>> CreateStock([FromBody] StockRequestDTO dto)
         {
+            var existingStock = await _stockService.GetStockByCodeAsync(dto.Code);
+            if (existingStock != null)
+            {
+                return BadRequest(new ApiResponse<StockResponseDTO>(400, "Stock with this code already exists"));
+            }
             var result = await _stockService.CreateStockAsync(dto);
             return Ok(new ApiResponse<StockResponseDTO>(201, "Created", result));
         }
@@ -202,6 +209,13 @@ namespace NDT.API.Controllers
         /// <remarks>
         /// POST /api/Stock/watchlist/add
         /// Body: { "userId": "user-id", "stockIds": [1,2,3] }
+        [HttpGet("watchlist/{userId}")]
+        public async Task<ActionResult<ApiResponse<List<string>>>> GetWatchList(string userId)
+        {
+            var watchlists = await _stockService.GetWatchListAsync(userId);
+           
+            return Ok(new ApiResponse<List<string>> (200, $"Successfully",watchlists ?? new List<string>()));
+        }
         /// </remarks>
         [HttpPost("watchlist/add")]
         public async Task<ActionResult<ApiResponse<object>>> AddStockToWatchList([FromBody] WatchListStockRequestDTO dto)

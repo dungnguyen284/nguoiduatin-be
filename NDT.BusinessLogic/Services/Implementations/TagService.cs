@@ -22,10 +22,14 @@ namespace NDT.BusinessLogic.Services.Implementations
 
         public async Task<IEnumerable<TagResponseDTO>> GetAllTagsAsync()
         {
-            var tags = await _unitOfWork.Tags.GetAllAsync();
+            var tags = await _unitOfWork.Tags.GetAllAsync(includes: [tags=>tags.News]);
             return _mapper.Map<IEnumerable<TagResponseDTO>>(tags);
         }
-
+        public async Task<IEnumerable<AdminTagResponseDTO>> GetAllTagsForAdminAsync()
+        {
+            var tags = await _unitOfWork.Tags.GetAllAsync(includes: [tags => tags.News]);
+            return _mapper.Map<IEnumerable<AdminTagResponseDTO>>(tags);
+        }
         public async Task<TagResponseDTO> GetTagByIdAsync(int id)
         {
             var tag = await _unitOfWork.Tags.GetByIdAsync(id);

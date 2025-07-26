@@ -85,6 +85,21 @@ namespace NDT.API.Controllers
                 return BadRequest(new ApiResponse<NewsResponseDTO>(400, ex.Message));
             }
         }
+        [HttpPut("frontpages")]
+        public async Task<ActionResult<ApiResponse<NewsResponseDTO>>> UpdateFPNews(IEnumerable<FPNewsDTO> fPNews)
+        {
+          
+            try
+            {
+                var isSuccess = await _newsService.UpdateFPNews(fPNews);
+                if(isSuccess) return Ok(new ApiResponse<NewsResponseDTO>(200, "Front page news updated successfully"));
+                return NotFound(new ApiResponse<NewsResponseDTO>(400, "khong duoc roi"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<NewsResponseDTO>(400, ex.Message));
+            }
+        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteNews(int id)

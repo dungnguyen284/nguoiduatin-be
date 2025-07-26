@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace NDT.BusinessModels.Entities
 {
+    public enum NewsStatus
+    {
+        ACTIVE,
+        INACTIVE,
+        DRAFT
+    }
+
     public class News
     {
         public int Id { get; set; }
@@ -15,7 +22,7 @@ namespace NDT.BusinessModels.Entities
         public string Link { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string Source { get; set; } = "Người Đưa Tin";
-        public bool IsActive { get; set; } = true;
+        public NewsStatus Status { get; set; } = NewsStatus.ACTIVE;
         public string Content { get; set; } = string.Empty;
         public int ViewCount { get; set; } = 0;
 

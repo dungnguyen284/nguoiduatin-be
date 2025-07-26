@@ -13,7 +13,7 @@ namespace NDT.BusinessLogic.Services.Interfaces
         Task<StockResponseDTO> CreateStockAsync(StockRequestDTO dto);
         Task<StockResponseDTO?> UpdateStockAsync(int id, StockRequestDTO dto);
         Task<bool> DeleteStockAsync(int id);
-
+        Task<List<string>> GetWatchListAsync(string userId);
         Task<bool> AddStockToWatchListAsync(WatchListStockRequestDTO dto);
         Task<bool> RemoveStockFromWatchListAsync(WatchListStockRequestDTO dto);
     }

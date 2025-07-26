@@ -100,8 +100,19 @@ namespace NDT.BusinessLogic.Services.Implementations
         public async Task<bool> AddStockToWatchListAsync(WatchListStockRequestDTO dto)
         {
             var watchList = await _unitOfWork.WatchLists.FirstOrDefaultAsync(w => w.UserId == dto.UserId, s => s.Stocks);
-            var stock = await _unitOfWork.Stocks.GetByIdAsync(dto.StockId);
-            if (watchList == null || stock == null) return false;
+            var stock = await _unitOfWork.Stocks.FirstOrDefaultAsync(c => c.Code == dto.Code);
+            if (stock == null) return false;
+            if (watchList == null)
+            {
+                watchList = new WatchList
+                {
+                    UserId = dto.UserId,
+                    Stocks = new List<Stock> { stock }
+                };
+                await _unitOfWork.WatchLists.AddAsync(watchList);
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
             if (!watchList.Stocks.Any(s => s.Id == stock.Id))
             {
                 watchList.Stocks.Add(stock);
@@ -115,12 +126,21 @@ namespace NDT.BusinessLogic.Services.Implementations
         {
             var watchList = await _unitOfWork.WatchLists.FirstOrDefaultAsync(w => w.UserId == dto.UserId, s => s.Stocks);
             if (watchList == null) return false;
-            var stock = watchList.Stocks.FirstOrDefault(s => s.Id == dto.StockId);
+            var stock = watchList.Stocks.FirstOrDefault(s => s.Code == dto.Code);
             if (stock == null) return false;
             watchList.Stocks.Remove(stock);
             await _unitOfWork.WatchLists.UpdateAsync(watchList);
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<string>> GetWatchListAsync(string userId)
+        {
+            var watchList = await _unitOfWork.WatchLists
+                .FirstOrDefaultAsync(w => w.UserId == userId, w => w.Stocks);
+            return watchList == null ? new List<string>() : watchList.Stocks
+                .Select(s => s.Code)
+                .ToList();
         }
     }
 }

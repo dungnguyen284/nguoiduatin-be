@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NDT.BusinessModels.Entities;
 
 namespace NDT.BusinessLogic.DTOs.RequestDTOs
 {
@@ -11,9 +12,9 @@ namespace NDT.BusinessLogic.DTOs.RequestDTOs
         public string Link { get; set; }
         public string ImageUrl { get; set; }
         public string Source { get; set; }
-        public bool IsActive { get; set; }
-        public Guid AuthorId { get; set; }
+        public NewsStatus Status { get; set; }
+        public Guid? AuthorId { get; set; }
         public int CategoryId { get; set; }
         public List<int> TagIds { get; set; }
     }
-} 
+}

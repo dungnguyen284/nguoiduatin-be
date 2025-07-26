@@ -98,8 +98,9 @@ namespace NDT.BusinessLogic.Services.Implementations
 
             if (existingNews == null)
                 return null;
-
+            var authorId = existingNews.AuthorId;
             _mapper.Map(newsDto, existingNews);
+            existingNews.AuthorId = authorId; 
 
             // Update tags
             if (newsDto.TagIds != null)
@@ -107,7 +108,7 @@ namespace NDT.BusinessLogic.Services.Implementations
                 var tags = await _unitOfWork.Tags.GetAllAsync(t => newsDto.TagIds.Contains(t.Id));
                 existingNews.Tags = tags.ToList();
             }
-
+            await _unitOfWork.News.UpdateAsync(existingNews);
             await _unitOfWork.SaveChangesAsync();
 
             return await GetNewsByIdAsync(id, "0.0.0.0"); // Placeholder IP for update
@@ -122,6 +123,41 @@ namespace NDT.BusinessLogic.Services.Implementations
             await _unitOfWork.News.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<News>> GetNewsByAuthorId(string aId)
+        {
+            return await _unitOfWork.News.GetAllAsync(n => n.AuthorId == aId);
+        }
+        public async Task<bool> UpdateFPNews(IEnumerable<FPNewsDTO> fPNews)
+        {
+            foreach (var item in fPNews)
+            {
+                var news = await _unitOfWork.News.GetByIdAsync(item.Id);
+                if (news == null) return false;
+
+                var frontPageNews = await _unitOfWork.FrontPageNews.FirstOrDefaultAsync(fp => fp.SlotNumber == item.SlotNumber);
+                if (frontPageNews == null)
+                {
+                    frontPageNews = new FrontPageNews
+                    {
+                        NewsId = item.Id,
+                        SlotNumber = item.SlotNumber
+                    };
+                    await _unitOfWork.FrontPageNews.AddAsync(frontPageNews);
+                    await _unitOfWork.SaveChangesAsync();
+
+                }
+                else
+                {
+                    frontPageNews.NewsId = item.Id;
+                    await _unitOfWork.FrontPageNews.UpdateAsync(frontPageNews);
+                    await _unitOfWork.SaveChangesAsync();
+
+                }
+            }
+            return true;
+
         }
     }
 }

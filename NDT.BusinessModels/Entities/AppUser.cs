@@ -11,6 +11,6 @@ namespace NDT.BusinessModels.Entities
     {
         public string FullName { get; set; } = string.Empty;
         public WatchList WatchList { get; set; } = null!;
-
+        public ICollection<News> News { get; set; } = new List<News>();
     }
 }

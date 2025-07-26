@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NDT.BusinessModels.Entities;
 
 namespace NDT.BusinessLogic.DTOs.ResponseDTOs
 {
@@ -12,9 +13,9 @@ namespace NDT.BusinessLogic.DTOs.ResponseDTOs
         public string Link { get; set; }
         public string ImageUrl { get; set; }
         public string Source { get; set; }
-        public bool IsActive { get; set; }
+        public NewsStatus Status { get; set; }
         public bool IsFrontPage { get; set; } = false;
-        public int SlotNumber { get; set; } = 0; 
+        public int SlotNumber { get; set; } = 0;
         public string Content { get; set; }
         public string AuthorId { get; set; }
         public string AuthorName { get; set; }
@@ -23,4 +24,4 @@ namespace NDT.BusinessLogic.DTOs.ResponseDTOs
         public List<TagResponseDTO> Tags { get; set; }
         public int ViewCount { get; set; }
     }
-} 
+}

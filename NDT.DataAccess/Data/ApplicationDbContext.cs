@@ -42,7 +42,7 @@ namespace NDT.DataAccess.Data
 
                 // Configure relationships
                 entity.HasOne(e => e.Author)
-                    .WithMany()
+                    .WithMany(u => u.News)
                     .HasForeignKey(e => e.AuthorId)
                     .OnDelete(DeleteBehavior.Restrict);
 

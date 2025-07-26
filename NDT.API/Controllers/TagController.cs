@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using NDT.API.CustomedResponses;
 using NDT.BusinessLogic.DTOs.RequestDTOs;
 using NDT.BusinessLogic.DTOs.ResponseDTOs;
@@ -21,10 +22,18 @@ namespace NDT.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<TagResponseDTO>>>> GetAllTags()
+        [EnableQuery]
+        public async Task<ActionResult<IEnumerable<TagResponseDTO>>> GetAllTags()
         {
             var tags = await _tagService.GetAllTagsAsync();
-            return Ok(new ApiResponse<IEnumerable<TagResponseDTO>>(200, "Success", tags));
+            return Ok(tags);
+        }
+        [HttpGet("manage")]
+        [EnableQuery]
+        public async Task<ActionResult<IEnumerable<AdminTagResponseDTO>>> GetAllTagsForAdmin()
+        {
+            var tags = await _tagService.GetAllTagsAsync();
+            return Ok(tags);
         }
 
         [HttpGet("{id}")]
@@ -38,7 +47,7 @@ namespace NDT.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<TagResponseDTO>>> CreateTag(TagRequestDTO tagDto)
         {
             var createdTag = await _tagService.CreateTagAsync(tagDto);
